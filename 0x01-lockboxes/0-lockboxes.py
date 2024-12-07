@@ -6,7 +6,6 @@ argument -- description
 Return: return_description
 """
 
-
 def canUnlockAll(boxes):
     """sumary_line
     
