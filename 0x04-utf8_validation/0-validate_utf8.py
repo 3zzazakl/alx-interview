@@ -7,7 +7,7 @@ Validate UTF-8 string
 def validUTF8(data):
     """
     Validate UTF-8 string
-    :param data: string to validate
+    :param data: string to validate to be UTF-8
     :return: True if valid UTF-8, False otherwise
     """
     i = 0
