@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""sumary_line
+"""summary_line
 
 Keyword arguments:
 argument -- description
@@ -7,69 +7,44 @@ Return: return_description
 """
 import sys
 
+status_codes = {
+    '200': 0,
+    '301': 0,
+    '400': 0,
+    '401': 0,
+    '403': 0,
+    '404': 0,
+    '405': 0,
+    '500': 0
+}
 
-def parse_log_line(line):
-    """sumary_line
-
-    Keyword arguments:
-    argument -- description
-    Return: return_description
-    """
-    try:
-        parts = line.split('"')
-        if len(parts) < 3:
-            return None
-
-        status_code = int(parts[2].split()[-2])
-        file_size = int(parts[2].split()[-1])
-        return status_code, file_size
-    except (IndexError, ValueError):
-        return None
+total_size = 0
+counter = 0
 
 
-def print_stats(total_size, status_codes):
-    """sumary_line
-
-    Keyword arguments:
-    argument -- description
-    Return: return_description
-    """
-    print(f"File size: {total_size}")
-    for status_code in sorted(status_codes.keys()):
-        print(f"{status_code}: {status_codes[status_code]}")
-
-
-def main():
-    """sumary_line
-
-    Keyword arguments:
-    argument -- description
-    Return: return_description
-    """
-    total_size = 0
-    status_codes = {200: 0, 301: 0, 400: 0, 401: 0,
-                    403: 0, 404: 0, 405: 0, 500: 0}
-    line_count = 0
-
-    try:
-        for line in sys.stdin:
-            result = parse_log_line(line)
-            if result is None:
-                continue
-
-            status_code, file_size = result
-            if status_code in status_codes:
-                status_codes[status_code] += 1
-                total_size += file_size
-
-            line_count += 1
-
-            if line_count % 10 == 0:
-                print_stats(total_size, status_codes)
-
-    except KeyboardInterrupt:
-        print_stats(total_size, status_codes)
-
-
-if __name__ == "__main__":
-    main()
+try:
+    for line in sys.stdin:
+        counter += 1
+        data = line.split()
+        try:
+            total_size += int(data[-1])
+        except:
+            pass
+        try:
+            if data[-2] in status_codes:
+                status_codes[data[-2]] += 1
+        except:
+            pass
+        if counter == 10:
+            print("File size: {}".format(total_size))
+            for key, value in sorted(status_codes.items()):
+                if value != 0:
+                    print("{}: {}".format(key, value))
+            counter = 0
+except KeyboardInterrupt:
+    pass
+finally:
+    print("File size: {}".format(total_size))
+    for key, value in sorted(status_codes.items()):
+        if value != 0:
+            print("{}: {}".format(key, value))
