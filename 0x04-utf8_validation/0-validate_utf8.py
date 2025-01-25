@@ -10,34 +10,25 @@ def validUTF8(data):
     :param data: string to validate to be UTF-8
     :return: True if valid UTF-8, False otherwise
     """
-    i = 0
-    n = len(data)
+    n_bytes = 0
 
-    while i < n:
-        byte = data[i]
+    for num in data:
+        bin_repr = format(num, '#010b')[-8:]
 
-        if byte & 0x80 == 0:
-            i += 1
-        elif byte & 0xE0 == 0xC0:
-            if i + 1 >= n or data[i + 1] & 0xC0 != 0x80:
+        if n_bytes == 0:
+            for bit in bin_repr:
+                if bit == '0':
+                    break
+                n_bytes += 1
+            if n_bytes == 0:
+                continue
+
+            if n_bytes == 1 or n_bytes > 4:
                 return False
-            i += 2
-        elif byte & 0xF0 == 0xE0:
-            if (i + 2 >= n
-                or data[i + 1] & 0xC0 != 0x80
-                    or data[i + 2] & 0xC0 != 0x80):
-                return False
-            i += 3
-        elif byte & 0xF8 == 0xF0:
-            if (
-                i + 3 >= n
-                or data[i + 1] & 0xC0 != 0x80
-                or data[i + 2] & 0xC0 != 0x80
-                or data[i + 3] & 0xC0 != 0x80
-            ):
-                return False
-            i += 4
         else:
-            return False
+            if not (bin_repr[0] == '1' and bin_repr[1] == '0'):
+                return False
 
-    return True
+        n_bytes -= 1
+
+    return n_bytes == 0
