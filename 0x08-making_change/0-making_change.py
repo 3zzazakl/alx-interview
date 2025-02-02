@@ -27,6 +27,6 @@ def makeChange(coins, amount):
             count += 1
         else:
             i += 1
-        if amount == 0:
-            return count
-        return -1
+    if amount == 0:
+        return count
+    return -1
